@@ -3,7 +3,7 @@ package ru.practicum.user;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Repository;
-import ru.practicum.exception.SameEmailException;
+import ru.practicum.exception.EmailAlreadyExistsException;
 import ru.practicum.exception.ValidationException;
 
 
@@ -28,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         for (User useri : users.values()) {
             if (useri.getEmail().equals(user.getEmail())) {
-                throw new SameEmailException("Пользователь с такой почтой уже существует");
+                throw new EmailAlreadyExistsException("Пользователь с такой почтой уже существует");
             }
         }
         user.setId(generateId());
@@ -40,10 +40,10 @@ public class UserRepositoryImpl implements UserRepository {
     public User updateUser(User user) throws BadRequestException {
         isValidId(user.getId());
         User existingUser = users.get(user.getId());
-        for (User useri : users.values()) {
-            if (useri.getEmail().equals(user.getEmail())) {
-                throw new SameEmailException("Пользователь с такой почтой уже существует");
-            }
+
+        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())
+                && emailAlreadyExists(user.getEmail())) {
+            throw new EmailAlreadyExistsException("Пользователь с такой почтой уже существует");
         }
 
         if (user.getName() != null) {
@@ -76,6 +76,15 @@ public class UserRepositoryImpl implements UserRepository {
         if (id == null || !users.containsKey(id)) {
             throw new BadRequestException("Неверный ID пользователя");
         }
+    }
+
+    private boolean emailAlreadyExists(String email) {
+        for (User user : users.values()) {
+            if (user.getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Map<Long,User> getUsers() {

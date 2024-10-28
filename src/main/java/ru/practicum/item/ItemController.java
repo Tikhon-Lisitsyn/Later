@@ -1,5 +1,6 @@
 package ru.practicum.item;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,13 @@ public class ItemController {
     }
 
     @PostMapping
-    public Item add(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public Item add(@RequestHeader("X-Sharer-User-Id") @Valid Long userId,
                     @RequestBody ItemDto itemDto) {
         return itemService.addNew(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public Item update(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public Item update(@RequestHeader("X-Sharer-User-Id") @Valid  Long userId,
                        @PathVariable Long itemId,
                        @RequestBody ItemDto itemDto) throws BadRequestException {
         itemDto.setId(itemId);

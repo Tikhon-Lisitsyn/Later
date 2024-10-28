@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.exception.EmailAlreadyExistsException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.SameEmailException;
 import ru.practicum.exception.ValidationException;
 
 @AllArgsConstructor
@@ -19,32 +19,28 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ErrorResponse handleValidationException(final ValidationException e) {
-        log.error("Ошибка ",e);
-        return new ErrorResponse("error: Ошибка с входным параметром.",
-                "description: " + e.getMessage());
+        log.error("Ошибка: {}", e.getMessage(), e);
+        return new ErrorResponse("Ошибка с входным параметром", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
-        log.error("Ошибка ",e);
-        return new ErrorResponse("error: Ошибка с нахождением объекта",
-                "description: " + e.getMessage());
+        log.error("Ошибка: {}", e.getMessage(), e);
+        return new ErrorResponse("Ошибка с входным параметром", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler
     public ErrorResponse handleException(final Throwable e) {
-        log.error("Ошибка ",e);
-        return new ErrorResponse("error: Непредвиденная ошибка",
-                "description: " + e.getMessage());
+        log.error("Ошибка: {}", e.getMessage(), e);
+        return new ErrorResponse("Ошибка с входным параметром", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler
-    public ErrorResponse handleSameEmailException(final SameEmailException e) {
-        log.error("Ошибка ",e);
-        return new ErrorResponse("error: Ошибка с состоянием сервера",
-                "description: " + e.getMessage());
+    public ErrorResponse handleSameEmailException(final EmailAlreadyExistsException e) {
+        log.error("Ошибка: {}", e.getMessage(), e);
+        return new ErrorResponse("Ошибка с входным параметром", e.getMessage());
     }
 }

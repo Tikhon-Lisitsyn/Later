@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void remove( @Valid Long userId) throws BadRequestException {
+    public void remove(@Valid Long userId) throws BadRequestException {
         userServiceImpl.removeUser(userId);
     }
 }
